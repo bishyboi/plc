@@ -9,7 +9,8 @@ import java.util.List;
  * {@link #lexToken()}, which determines the type of the next token and
  * delegates to the corresponding lex method.
  *
- * <p>Additionally, {@link CharStream} manages the lexer state and contains
+ * <p>
+ * Additionally, {@link CharStream} manages the lexer state and contains
  * {@link CharStream#peek} and {@link CharStream#match}. These are helpful
  * utilities for working with character state and building tokens.
  */
@@ -22,48 +23,138 @@ public final class Lexer {
     }
 
     public List<Token> lex() throws LexException {
-        var tokens = new ArrayList<Token>();
+        List<Token> tokens = new ArrayList<>();
         while (chars.has(0)) {
-            //TODO: Skip whitespace/comments
-            tokens.add(lexToken());
+            if (chars.peek("[ \b\n\r\t]")) {
+                lexWhitespace();
+            } else if (chars.peek("/", "/")) {
+                lexComment();
+            } else {
+                tokens.add(lexToken());
+            }
         }
         return tokens;
     }
 
     private void lexWhitespace() {
-        throw new UnsupportedOperationException("TODO"); //TODO
+        while (chars.match("[ \b\n\r\t]"))
+            ;
+        chars.emit();
     }
 
     private void lexComment() {
-        throw new UnsupportedOperationException("TODO"); //TODO
+        chars.match("/");
+        chars.match("/");
+        while (chars.match("[^\n\r]"))
+            ;
+        chars.emit();
     }
 
-    private Token lexToken() {
-        throw new UnsupportedOperationException("TODO"); //TODO
+    private Token lexToken() throws LexException{
+        if (chars.peek("[A-Za-z_]")) {
+            return lexIdentifier();
+        } else if (chars.peek("[0-9]") || chars.peek("[+-]", "[0-9]")) {
+            return lexNumber();
+        } else if (chars.peek("'")) {
+            return lexCharacter();
+        } else if (chars.peek("\"")) {
+            return lexString();
+        } else {
+            return lexOperator();
+        }
     }
 
     private Token lexIdentifier() {
-        throw new UnsupportedOperationException("TODO"); //TODO
+        chars.match("[A-Za-z_]");
+        while (chars.match("[A-Za-z0-9_-]"))
+            ;
+        return new Token(Token.Type.IDENTIFIER, chars.emit());
     }
 
     private Token lexNumber() {
-        throw new UnsupportedOperationException("TODO"); //TODO
+        chars.match("[+-]");
+        chars.match("[0-9]");
+        while (chars.match("[0-9]"))
+            ;
+
+        boolean isDecimal = false;
+        if (chars.peek("\\.", "[0-9]")) {
+            isDecimal = true;
+            chars.match("\\.");
+            while (chars.match("[0-9]"))
+                ;
+        }
+
+        if (chars.peek("[eE]", "[+-]", "[0-9]")) {
+            chars.match("[eE]");
+            chars.match("[+-]");
+            while (chars.match("[0-9]"))
+                ;
+        } else if (chars.peek("[eE]", "[0-9]")) {
+            chars.match("[eE]");
+            while (chars.match("[0-9]"))
+                ;
+        }
+
+        return new Token(isDecimal ? Token.Type.DECIMAL : Token.Type.INTEGER, chars.emit());
     }
 
-    private Token lexCharacter() {
-        throw new UnsupportedOperationException("TODO"); //TODO
+    private Token lexCharacter() throws LexException{
+        chars.match("'");
+
+        // Check for escape sequence or a valid literal character
+        if (chars.peek("\\\\")) {
+            lexEscape();
+        } else if (!chars.match("[^'\\n\\r]")) {
+            // If it's not an escape and not a valid literal char, it's an error
+            throw new LexException("Invalid character literal", chars.index);
+        }
+
+        if (!chars.match("'")) {
+            throw new LexException("Unterminated character literal", chars.index);
+        }
+
+        return new Token(Token.Type.CHARACTER, chars.emit());
     }
 
-    private Token lexString() {
-        throw new UnsupportedOperationException("TODO"); //TODO
+    private Token lexString() throws LexException{
+        chars.match("\"");
+
+        while (!chars.peek("\"")) {
+            // Check for line breaks or EOF before the closing quote
+            if (!chars.has(0) || chars.peek("[\\n\\r]")) {
+                throw new LexException("Unterminated string literal", chars.index);
+            }
+
+            if (chars.peek("\\\\")) {
+                lexEscape();
+            } else {
+                // Consume exactly one character (the '.' regex)
+                chars.match(".");
+            }
+        }
+
+        chars.match("\"");
+        return new Token(Token.Type.STRING, chars.emit());
     }
 
-    private void lexEscape() {
-        throw new UnsupportedOperationException("TODO"); //TODO
+    private void lexEscape() throws LexException{
+        chars.match("\\\\");
+        // If the next character isn't a valid escape code, throw immediately
+        if (!chars.match("[bnrt'\"\\\\]")) {
+            throw new LexException("Invalid escape sequence", chars.index);
+        }
     }
 
-    public Token lexOperator() {
-        throw new UnsupportedOperationException("TODO"); //TODO
+    public Token lexOperator() throws LexException{
+        // Matches multi-char operators like <=, >=, !=, ==
+        // If no match, it falls through to match any single character
+        if (!chars.match("[<>!=]", "=") && !chars.match(".")) {
+                throw new LexException("Unexpected end of input", chars.index);
+            }
+        
+
+        return new Token(Token.Type.OPERATOR, chars.emit());
     }
 
     /**
@@ -87,10 +178,10 @@ public final class Lexer {
         /**
          * Returns true if the next character(s) match their corresponding
          * pattern(s). Each pattern is a regex matching ONE character, e.g.:
-         *  - peek("/") is valid and will match the next character
-         *  - peek("/", "/") is valid and will match the next two characters
-         *  - peek("/+") is conceptually invalid, but will match one character
-         *  - peek("//") is strictly invalid as it can never match one character
+         * - peek("/") is valid and will match the next character
+         * - peek("/", "/") is valid and will match the next two characters
+         * - peek("/+") is conceptually invalid, but will match one character
+         * - peek("//") is strictly invalid as it can never match one character
          */
         public boolean peek(String... patterns) {
             if (!has(patterns.length - 1)) {

@@ -18,10 +18,9 @@ public final class LexerTests {
 
     public static Stream<Arguments> testWhitespace() {
         return Stream.of(
-            Arguments.of("Space", " ", true),
-            Arguments.of("Newline", "\n", true),
-            Arguments.of("Multiple", "    \n    ", true)
-        );
+                Arguments.of("Space", " ", true),
+                Arguments.of("Newline", "\n", true),
+                Arguments.of("Multiple", "    \n    ", true));
     }
 
     @ParameterizedTest
@@ -32,9 +31,8 @@ public final class LexerTests {
 
     public static Stream<Arguments> testComment() {
         return Stream.of(
-            Arguments.of("Empty", "//", true),
-            Arguments.of("Text", "//comment", true)
-        );
+                Arguments.of("Empty", "//", true),
+                Arguments.of("Text", "//comment", true));
     }
 
     @ParameterizedTest
@@ -45,11 +43,10 @@ public final class LexerTests {
 
     public static Stream<Arguments> testIdentifier() {
         return Stream.of(
-            Arguments.of("Alphabetic", "getName", true),
-            Arguments.of("Alphanumeric", "thelegend27", true),
-            Arguments.of("Leading Hyphen", "-five", false),
-            Arguments.of("Leading Digit", "1fish2fish", false)
-        );
+                Arguments.of("Alphabetic", "getName", true),
+                Arguments.of("Alphanumeric", "thelegend27", true),
+                Arguments.of("Leading Hyphen", "-five", false),
+                Arguments.of("Leading Digit", "1fish2fish", false));
     }
 
     @ParameterizedTest
@@ -60,11 +57,10 @@ public final class LexerTests {
 
     public static Stream<Arguments> testInteger() {
         return Stream.of(
-            Arguments.of("Single Digit", "1", true),
-            Arguments.of("Multiple Digits", "123", true),
-            Arguments.of("Exponent", "1e10", true),
-            Arguments.of("Missing Exponent Digits", "1e", false)
-        );
+                Arguments.of("Single Digit", "1", true),
+                Arguments.of("Multiple Digits", "123", true),
+                Arguments.of("Exponent", "1e10", true),
+                Arguments.of("Missing Exponent Digits", "1e", false));
     }
 
     @ParameterizedTest
@@ -75,11 +71,15 @@ public final class LexerTests {
 
     public static Stream<Arguments> testDecimal() {
         return Stream.of(
-            Arguments.of("Decimal", "1.0", true),
-            Arguments.of("Multiple Digits", "123.456", true),
-            Arguments.of("Exponent", "1.0e10", true),
-            Arguments.of("Trailing Decimal", "1.", false)
-        );
+                Arguments.of("Decimal", "1.0", true),
+                Arguments.of("Multiple Digits", "123.456", true),
+                Arguments.of("Positive Decimal", "+1.0", true),
+                Arguments.of("Negative Decimal", "-1.0", true),
+                Arguments.of("Zero Decimal", "0.0", true),
+                Arguments.of("Scientific Decimal", "1.0e10", true),
+                Arguments.of("Scientific Positive Exponent", "1.5e+10", true),
+                Arguments.of("Scientific Negative Exponent", "1.5E-10", true),
+                Arguments.of("Trailing Decimal", "1.", false));
     }
 
     @ParameterizedTest
@@ -90,11 +90,10 @@ public final class LexerTests {
 
     public static Stream<Arguments> testCharacter() {
         return Stream.of(
-            Arguments.of("Alphabetic", "\'c\'", true),
-            Arguments.of("Newline Escape", "\'\\n\'", true),
-            Arguments.of("Unterminated", "\'u", false),
-            Arguments.of("Multiple", "\'abc\'", false)
-        );
+                Arguments.of("Alphabetic", "\'c\'", true),
+                Arguments.of("Newline Escape", "\'\\n\'", true),
+                Arguments.of("Unterminated", "\'u", false),
+                Arguments.of("Multiple", "\'abc\'", false));
     }
 
     @ParameterizedTest
@@ -105,11 +104,13 @@ public final class LexerTests {
 
     public static Stream<Arguments> testString() {
         return Stream.of(
-            Arguments.of("Empty", "\"\"", true),
-            Arguments.of("Alphabetic", "\"string\"", true),
-            Arguments.of("Newline Escape", "\"Hello,\\nWorld\"", true),
-            Arguments.of("Invalid Escape", "\"invalid\\escape\"", false)
-        );
+                Arguments.of("Empty", "\"\"", true),
+                Arguments.of("Alphabetic", "\"string\"", true),
+                Arguments.of("Newline Escape", "\"Hello,\\nWorld\"", true),
+                Arguments.of("All Escapes", "\"\\b\\n\\r\\t\\\'\\\"\\\\\"", true),
+                Arguments.of("Quotes in String", "\"He said \\\"Hello\\\"\"", true),
+                Arguments.of("Backslash in String", "\"C:\\\\Windows\"", true),
+                Arguments.of("Invalid Escape", "\"invalid\\escape\"", false));
     }
 
     @ParameterizedTest
@@ -120,11 +121,10 @@ public final class LexerTests {
 
     public static Stream<Arguments> testOperator() {
         return Stream.of(
-            Arguments.of("Character", "(", true),
-            Arguments.of("Comparison", "<=", true),
-            Arguments.of("Whitespace", " ", false),
-            Arguments.of("Double Quote", "\"", false)
-        );
+                Arguments.of("Character", "(", true),
+                Arguments.of("Comparison", "<=", true),
+                Arguments.of("Whitespace", " ", false),
+                Arguments.of("Double Quote", "\"", false));
     }
 
     @ParameterizedTest
@@ -135,31 +135,24 @@ public final class LexerTests {
 
     public static Stream<Arguments> testInteraction() {
         return Stream.of(
-            Arguments.of("Whitespace", "first second", List.of(
-                new Token(Token.Type.IDENTIFIER, "first"),
-                new Token(Token.Type.IDENTIFIER, "second")
-            )),
-            Arguments.of("Identifier Leading Hyphen", "-five", List.of(
-                new Token(Token.Type.OPERATOR, "-"),
-                new Token(Token.Type.IDENTIFIER, "five")
-            )),
-            Arguments.of("Identifier Leading Digit", "1fish2fish", List.of(
-                new Token(Token.Type.INTEGER, "1"),
-                new Token(Token.Type.IDENTIFIER, "fish2fish")
-            )),
-            Arguments.of("Integer Missing Exponent Digits", "1e", List.of(
-                new Token(Token.Type.INTEGER, "1"),
-                new Token(Token.Type.IDENTIFIER, "e")
-            )),
-            Arguments.of("Decimal Missing Decimal Digits", "1.", List.of(
-                new Token(Token.Type.INTEGER, "1"),
-                new Token(Token.Type.OPERATOR, ".")
-            )),
-            Arguments.of("Operator Multiple Operators", "<=>", List.of(
-                new Token(Token.Type.OPERATOR, "<="),
-                new Token(Token.Type.OPERATOR, ">")
-            ))
-        );
+                Arguments.of("Whitespace", "first second", List.of(
+                        new Token(Token.Type.IDENTIFIER, "first"),
+                        new Token(Token.Type.IDENTIFIER, "second"))),
+                Arguments.of("Identifier Leading Hyphen", "-five", List.of(
+                        new Token(Token.Type.OPERATOR, "-"),
+                        new Token(Token.Type.IDENTIFIER, "five"))),
+                Arguments.of("Identifier Leading Digit", "1fish2fish", List.of(
+                        new Token(Token.Type.INTEGER, "1"),
+                        new Token(Token.Type.IDENTIFIER, "fish2fish"))),
+                Arguments.of("Integer Missing Exponent Digits", "1e", List.of(
+                        new Token(Token.Type.INTEGER, "1"),
+                        new Token(Token.Type.IDENTIFIER, "e"))),
+                Arguments.of("Decimal Missing Decimal Digits", "1.", List.of(
+                        new Token(Token.Type.INTEGER, "1"),
+                        new Token(Token.Type.OPERATOR, "."))),
+                Arguments.of("Operator Multiple Operators", "<=>", List.of(
+                        new Token(Token.Type.OPERATOR, "<="),
+                        new Token(Token.Type.OPERATOR, ">"))));
     }
 
     @ParameterizedTest
@@ -171,10 +164,9 @@ public final class LexerTests {
 
     public static Stream<Arguments> testException() {
         return Stream.of(
-            Arguments.of("Character Unterminated", "\'u", 2),
-            Arguments.of("Character Multiple", "\'abc\'", 2),
-            Arguments.of("String Invalid Escape", "\"invalid\\escape\"", 9)
-        );
+                Arguments.of("Character Unterminated", "\'u", 2),
+                Arguments.of("Character Multiple", "\'abc\'", 2),
+                Arguments.of("String Invalid Escape", "\"invalid\\escape\"", 9));
     }
 
     @ParameterizedTest
@@ -185,34 +177,32 @@ public final class LexerTests {
 
     public static Stream<Arguments> testProgram() {
         return Stream.of(
-            Arguments.of("Variable", "LET x = 5;", List.of(
-                new Token(Token.Type.IDENTIFIER, "LET"),
-                new Token(Token.Type.IDENTIFIER, "x"),
-                new Token(Token.Type.OPERATOR, "="),
-                new Token(Token.Type.INTEGER, "5"),
-                new Token(Token.Type.OPERATOR, ";")
-            )),
-            Arguments.of("Print Function", "print(\"Hello, World!\");", List.of(
-                new Token(Token.Type.IDENTIFIER, "print"),
-                new Token(Token.Type.OPERATOR, "("),
-                new Token(Token.Type.STRING, "\"Hello, World!\""),
-                new Token(Token.Type.OPERATOR, ")"),
-                new Token(Token.Type.OPERATOR, ";")
-            ))
-        );
+                Arguments.of("Variable", "LET x = 5;", List.of(
+                        new Token(Token.Type.IDENTIFIER, "LET"),
+                        new Token(Token.Type.IDENTIFIER, "x"),
+                        new Token(Token.Type.OPERATOR, "="),
+                        new Token(Token.Type.INTEGER, "5"),
+                        new Token(Token.Type.OPERATOR, ";"))),
+                Arguments.of("Print Function", "print(\"Hello, World!\");", List.of(
+                        new Token(Token.Type.IDENTIFIER, "print"),
+                        new Token(Token.Type.OPERATOR, "("),
+                        new Token(Token.Type.STRING, "\"Hello, World!\""),
+                        new Token(Token.Type.OPERATOR, ")"),
+                        new Token(Token.Type.OPERATOR, ";"))));
     }
 
     private static void test(String input, List<Token> expected, boolean equals) {
         if (equals) {
-            //Expect the result to exactly match expected.
+            // Expect the result to exactly match expected.
             var tokens = Assertions.assertDoesNotThrow(() -> new Lexer(input).lex());
             Assertions.assertEquals(expected, tokens);
         } else {
-            //Expect either an exception or different result, used for tests
-            //verifying input is not lexed as a specific token type.
+            // Expect either an exception or different result, used for tests
+            // verifying input is not lexed as a specific token type.
             try {
                 Assertions.assertNotEquals(expected, new Lexer(input).lex());
-            } catch (LexException ignored) {}
+            } catch (LexException ignored) {
+            }
         }
     }
 

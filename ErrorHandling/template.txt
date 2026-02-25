@@ -1,0 +1,219 @@
+import java.io.IOException
+
+//IMPORTANT: These are API classes and should not be modified by your solution.
+data class HttpSuccess<T>(val status: Int, val body: T)
+class HttpError(val status: Int, message: String, cause: Throwable? = null): Exception("${message} (status=${status})", cause) {
+    constructor(status: Int, cause: Throwable) : this(status, cause.message ?: cause.javaClass.simpleName, cause)
+    override fun equals(other: Any?) = status == (other as? HttpError)?.status //hacky, but for test equality
+}
+
+//This object represents endpoints and should contain your implementation.
+object UrlApi {
+
+    // POST /urls {url: String, alias?: String}
+    fun create(body: Map<String, String>): HttpSuccess<UrlModel> {
+        throw UnsupportedOperationException("TODO") //TODO
+    }
+
+    // GET /urls/:key
+    fun read(key: String): HttpSuccess<UrlModel> {
+        throw UnsupportedOperationException("TODO") //TODO
+    }
+
+    // PATCH /urls/:id {alias: String}
+    fun update(id: String, body: Map<String, String>): Result<HttpSuccess<UrlModel>> {
+        throw UnsupportedOperationException("TODO") //TODO
+    }
+
+    // DELETE /urls/:id
+    fun delete(id: String): Boolean {
+        throw UnsupportedOperationException("TODO") //TODO
+    }
+
+}
+
+//IMPORTANT: This is an API class and should not be modified by your solution.
+data class UrlModel(val id: Int, val url: String, val alias: String?) {
+
+    companion object {
+
+        private val DB = object {
+            var id: Int = 1
+            val records = mutableMapOf<Int, UrlModel>()
+            val aliases = mutableMapOf<String, UrlModel>()
+        }
+        fun resetDB() { DB.id = 1; DB.records.clear(); DB.aliases.clear() }
+
+        fun insert(url: String, alias: String?): UrlModel {
+            require(url.isNotEmpty())
+            require(alias == null || alias.isNotEmpty() && !DB.aliases.contains(alias))
+            if (url == "error") {
+                throw IOException("Simulated database error (url=error)")
+            }
+            val model = UrlModel(DB.id++, url, alias)
+            DB.records[model.id] = model
+            model.alias?.let { DB.aliases[it] = model }
+            return model
+        }
+
+        fun select(id: Int): UrlModel {
+            require(id >= -1)
+            if (id == -1) {
+                throw IOException("Simulated database error (id=-1)")
+            }
+            return DB.records[id] ?: throw NoSuchElementException("Record ${id} does not exist.")
+        }
+
+        fun select(alias: String): UrlModel? {
+            require(alias.isNotEmpty())
+            if (alias == "error") {
+                throw IOException("Simulated database error (alias=error)")
+            }
+            return DB.aliases[alias]
+        }
+
+        fun update(id: Int, alias: String?): Result<UrlModel> {
+            require(alias == null || alias.isNotEmpty() && DB.aliases[alias]?.id in listOf(null, id))
+            if (alias == "error") {
+                return Result.failure(IOException("Simulated database error (alias=error)"))
+            }
+            val current = DB.records[id] ?: return Result.failure(NoSuchElementException("Record ${id} does not exist."))
+            val updated = current.copy(alias = alias)
+            DB.records[updated.id] = updated
+            current.alias?.let { DB.aliases.remove(it) }
+            updated.alias?.let { DB.aliases[it] = updated }
+            return Result.success(updated)
+        }
+
+        fun delete(id: Int): Result<Boolean> {
+            require(id >= -1)
+            if (id == -1) {
+                return Result.failure(IOException("Simulated database error (id=-1)"))
+            }
+            val model = DB.records.remove(id)
+            model?.alias?.let { DB.aliases.remove(it) }
+            return Result.success(model != null);
+        }
+
+    }
+
+}
+
+fun main() {
+    test("Create Url", listOf(
+        "POST /urls {url:'url'}" to HttpSuccess(201, UrlModel(1, "url", null)),
+    ))
+    test("Create Alias", listOf(
+        "POST /urls {url:'url',alias:'alias'}" to HttpSuccess(201, UrlModel(1, "url", "alias")),
+    ))
+    test("Create Invalid", listOf(
+        "POST /urls {invalid:'invalid'}" to HttpError(400, "unused"),
+    ))
+    test("Create DB Error", listOf(
+        "POST /urls {url:'error'}" to HttpError(500, "unused"),
+    ))
+    test("Create Contract Error", listOf(
+        "POST /urls {url:''}" to IllegalArgumentException::class.java,
+    ))
+    test("Read Id", listOf(
+        "POST /urls {url:'url'}" to HttpSuccess(201, UrlModel(1, "url", null)),
+        "GET /urls/1" to HttpSuccess(200, UrlModel(1, "url", null)),
+    ))
+    test("Read Alias", listOf(
+        "POST /urls {url:'url',alias:'alias'}" to HttpSuccess(201, UrlModel(1, "url", "alias")),
+        "GET /urls/alias" to HttpSuccess(200, UrlModel(1, "url", "alias")),
+    ))
+    test("Read Missing", listOf(
+        "GET /urls/alias" to HttpError(404, "unused"),
+    ))
+    test("Read DB Error", listOf(
+        "GET /urls/error" to HttpError(500, "unused"),
+    ))
+    test("Read Contract Error", listOf(
+        "GET /urls/-2" to IllegalArgumentException::class.java,
+    ))
+    test("Update", listOf(
+        "POST /urls {url:'url'}" to HttpSuccess(201, UrlModel(1, "url", null)),
+        "PATCH /urls/1 {alias:'new-alias'}" to Result.success(HttpSuccess(200, UrlModel(1, "url", "new-alias"))),
+    ))
+    test("Update Missing", listOf(
+        "PATCH /urls/1 {alias:'new-alias'}" to Result.failure<HttpSuccess<UrlModel>>(HttpError(404, "unused")),
+    ))
+    test("Update Invalid", listOf(
+        "PATCH /urls/1 {invalid:'invalid'}" to Result.failure<HttpSuccess<UrlModel>>(HttpError(400, "unused")),
+    ))
+    test("Update DB Error", listOf(
+        "POST /urls {url:'url'}" to HttpSuccess(201, UrlModel(1, "url", null)),
+        "PATCH /urls/1 {alias:'error'}" to Result.failure<Any>(HttpError(500, "unused")),
+    ))
+    test("Update Contract Error", listOf(
+        "PATCH /urls/1 {alias:''}" to IllegalArgumentException::class.java,
+    ))
+    test("Delete", listOf(
+        "POST /urls {url:'url'}" to HttpSuccess(201, UrlModel(1, "url", null)),
+        "DELETE /urls/1" to true,
+        "GET /urls/1" to HttpError(404, "unused"),
+    ))
+    test("Delete Missing", listOf(
+        "DELETE /urls/1" to false,
+    ))
+    test("Delete Invalid", listOf(
+        "DELETE /urls/invalid" to false,
+    ))
+    test("Delete DB Error", listOf(
+        "DELETE /urls/-1" to IOException::class.java,
+    ))
+    test("Delete Contract Error", listOf(
+        "DELETE /urls/-2" to IllegalArgumentException::class.java,
+    ))
+}
+
+fun test(name: String, requests: List<Pair<String, Any>>) {
+    UrlModel.Companion.resetDB()
+    val error = requests.firstNotNullOfOrNull { (request, expected) ->
+        val result = Result.runCatching { execute(request) }.getOrElse { it }
+        when {
+            result == expected || result.javaClass == (expected as? Class<*>) -> null
+            else -> """
+            |
+            |    - ${request}:
+            |         expected ${expected}
+            |         received ${result}${(result as? Exception)?.stackTrace?.first()?.let { " (${it})" } ?: ""}
+            """.trimMargin("|")
+        }
+    }
+    println(" - ${name}: ${if (error == null) "passed" else "failed"}${error ?: ""}")
+}
+
+private fun execute(request: String): Any {
+    val split = request.split(" ")
+    return when (split[0]) {
+        "POST" -> {
+            require(split.size == 3 && split[1] == "/urls")
+            UrlApi.create(parseBody(split[2]))
+        }
+        "GET" -> {
+            require(split.size == 2 && split[1].startsWith("/urls/"))
+            UrlApi.read(split[1].removePrefix("/urls/"))
+        }
+        "PATCH" -> {
+            require(split.size == 3 && split[1].startsWith("/urls/"))
+            UrlApi.update(split[1].removePrefix("/urls/"), parseBody(split[2]))
+        }
+        "DELETE" -> {
+            require(split.size == 2 && split[1].startsWith("/urls/"))
+            UrlApi.delete(split[1].removePrefix("/urls/"))
+        }
+        else -> throw IllegalArgumentException("Unknown command ${split[0]}")
+    }
+}
+
+private fun parseBody(string: String): Map<String, String> {
+    require(string.matches(Regex("\\{([a-z]+:'[^']*?',?)*}")))
+    return string.removeSurrounding("{", "}").split(",")
+        .takeUnless { it.size == 1 && it[0] == "" }.orEmpty()
+        .associate {
+            val (key, value) = it.split(":", limit = 2)
+            key to value.removeSurrounding("'")
+        }
+}

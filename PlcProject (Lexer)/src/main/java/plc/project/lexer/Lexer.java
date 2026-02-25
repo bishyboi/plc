@@ -50,10 +50,10 @@ public final class Lexer {
         chars.emit();
     }
 
-    private Token lexToken() {
+    private Token lexToken() throws LexException{
         if (chars.peek("[A-Za-z_]")) {
             return lexIdentifier();
-        } else if (chars.peek("[1-9]") || chars.peek("[+-]", "[1-9]")) {
+        } else if (chars.peek("[0-9]") || chars.peek("[+-]", "[0-9]")) {
             return lexNumber();
         } else if (chars.peek("'")) {
             return lexCharacter();
@@ -73,78 +73,87 @@ public final class Lexer {
 
     private Token lexNumber() {
         chars.match("[+-]");
-        chars.match("[1-9]");
-        while (chars.match("[1-9]"))
+        chars.match("[0-9]");
+        while (chars.match("[0-9]"))
             ;
 
         boolean isDecimal = false;
-        if (chars.peek("\\.", "[1-9]")) {
+        if (chars.peek("\\.", "[0-9]")) {
             isDecimal = true;
             chars.match("\\.");
-            while (chars.match("[1-9]"))
+            while (chars.match("[0-9]"))
                 ;
         }
 
-        if (chars.peek("[eE]", "[+-]", "[1-9]")) {
+        if (chars.peek("[eE]", "[+-]", "[0-9]")) {
             chars.match("[eE]");
             chars.match("[+-]");
-            while (chars.match("[1-9]"))
+            while (chars.match("[0-9]"))
                 ;
-        } else if (chars.peek("[eE]", "[1-9]")) {
+        } else if (chars.peek("[eE]", "[0-9]")) {
             chars.match("[eE]");
-            while (chars.match("[1-9]"))
+            while (chars.match("[0-9]"))
                 ;
         }
 
         return new Token(isDecimal ? Token.Type.DECIMAL : Token.Type.INTEGER, chars.emit());
     }
 
-    private Token lexCharacter() {
+    private Token lexCharacter() throws LexException{
         chars.match("'");
+
+        // Check for escape sequence or a valid literal character
         if (chars.peek("\\\\")) {
             lexEscape();
-        } else if (chars.match("[^'\\n\\r]")) {
-            // Matched regular character
-        } else {
+        } else if (!chars.match("[^'\\n\\r]")) {
+            // If it's not an escape and not a valid literal char, it's an error
             throw new LexException("Invalid character literal", chars.index);
         }
 
         if (!chars.match("'")) {
             throw new LexException("Unterminated character literal", chars.index);
         }
+
         return new Token(Token.Type.CHARACTER, chars.emit());
     }
 
-    private Token lexString() {
+    private Token lexString() throws LexException{
         chars.match("\"");
+
         while (!chars.peek("\"")) {
-            if (chars.peek("\\n") || chars.peek("\\r") || !chars.has(0)) {
+            // Check for line breaks or EOF before the closing quote
+            if (!chars.has(0) || chars.peek("[\\n\\r]")) {
                 throw new LexException("Unterminated string literal", chars.index);
             }
+
             if (chars.peek("\\\\")) {
                 lexEscape();
             } else {
+                // Consume exactly one character (the '.' regex)
                 chars.match(".");
             }
         }
+
         chars.match("\"");
         return new Token(Token.Type.STRING, chars.emit());
     }
 
-    private void lexEscape() {
+    private void lexEscape() throws LexException{
         chars.match("\\\\");
+        // If the next character isn't a valid escape code, throw immediately
         if (!chars.match("[bnrt'\"\\\\]")) {
             throw new LexException("Invalid escape sequence", chars.index);
         }
     }
 
-    // TODO: Double check that this function catches edge cases
-    public Token lexOperator() {
-        if (chars.match("[<>!=]", "=")) {
+    public Token lexOperator() throws LexException{
+        // Matches multi-char operators like <=, >=, !=, ==
+        // If no match, it falls through to match any single character
+        if (!chars.match("[<>!=]", "=") && !chars.match(".")) {
+                throw new LexException("Unexpected end of input", chars.index);
+            }
+        
 
-        } else {
-            chars.match(".");
-        }
         return new Token(Token.Type.OPERATOR, chars.emit());
     }
 
