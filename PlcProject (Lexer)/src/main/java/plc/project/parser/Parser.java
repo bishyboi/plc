@@ -49,35 +49,188 @@ public final class Parser {
     }
 
     private Ast.Stmt parseStmt() throws ParseException {
-        throw new UnsupportedOperationException("TODO"); //TODO
+        if (tokens.peek("LET")) {
+            return parseLetStmt();
+        } else if (tokens.peek("DEF")) {
+            return parseDefStmt();
+        } else if (tokens.peek("IF")) {
+            return parseIfStmt();
+        } else if (tokens.peek("FOR")) {
+            return parseForStmt();
+        } else if (tokens.peek("RETURN")) {
+            return parseReturnStmt();
+        } else {
+            return parseExpressionOrAssignmentStmt();
+        }
     }
 
     private Ast.Stmt parseLetStmt() throws ParseException {
-        throw new UnsupportedOperationException("TODO"); //TODO
+        tokens.match("LET");
+
+        if(!tokens.match(Token.Type.IDENTIFIER)){
+            throw error("Expected Identifier")
+        }
+
+        String name = tokens.get(-1).literal()
+
+        Optional<Ast.Expr> value = Optional.empty();
+        
+        if (tokens.match("=")) {
+            value = Optional.of(parseExpr());
+        }
+
+        if (!tokens.match(";")) {
+            throw error("Expected ';'");
+        }
+
+        return new Ast.Stmt.Let(name, value);
     }
 
     private Ast.Stmt parseDefStmt() throws ParseException {
-        throw new UnsupportedOperationException("TODO"); //TODO
+        tokens.match("DEF");
+
+        if (!tokens.match(Token.Type.IDENTIFIER)) {
+            throw error("Expected function name");
+        }
+        String name = tokens.get(-1).literal();
+
+        if (!tokens.match("(")) {
+            throw error("Expected '('");
+        }
+
+        List<String> parameters = new ArrayList<>();
+
+        if (!tokens.peek(")")) {
+            do {
+                if (!tokens.match(Token.Type.IDENTIFIER)) {
+                    throw error("Expected parameter name");
+                }
+                parameters.add(tokens.get(-1).literal());
+            } while (tokens.match(","));
+        }
+
+        if (!tokens.match(")")) {
+            throw error("Expected ')'");
+        }
+
+        if (!tokens.match("{")) {
+            throw error("Expected '{'");
+        }
+
+        List<Ast.Stmt> body = new ArrayList<>();
+        while (!tokens.peek("}")) {
+            body.add(parseStmt());
+        }
+
+        tokens.match("}");
+
+        return new Ast.Stmt.Def(name, parameters, body);
     }
 
     private Ast.Stmt parseIfStmt() throws ParseException {
-        throw new UnsupportedOperationException("TODO"); //TODO
+        tokens.match("IF");
+
+        tokens.match("(");
+        Ast.Expr condition = parseExpr();
+        tokens.match(")");
+
+        tokens.match("{");
+        List<Ast.Stmt> thenStmts = new ArrayList<>();
+        while (!tokens.peek("}")) {
+            thenStmts.add(parseStmt());
+        }
+        tokens.match("}");
+
+        List<Ast.Stmt> elseStmts = new ArrayList<>();
+
+        if (tokens.match("ELSE")) {
+            tokens.match("{");
+            while (!tokens.peek("}")) {
+                elseStmts.add(parseStmt());
+            }
+            tokens.match("}");
+        }
+
+        return new Ast.Stmt.If(condition, thenStmts, elseStmts);
     }
 
     private Ast.Stmt parseForStmt() throws ParseException {
-        throw new UnsupportedOperationException("TODO"); //TODO
+        if (!tokens.match("FOR")) {
+            throw new ParseException("Expected 'FOR'.", tokens.getNext());
+        }
+        if (!tokens.match("(")) {
+            throw new ParseException("Expected '('.", tokens.getNext());
+        }
+        if (!tokens.match(Token.Type.IDENTIFIER)) {
+            throw new ParseException("Expected loop variable name.", tokens.getNext());
+        }
+        String name = tokens.get(-1).literal();
+
+        if (!tokens.match("IN")) {
+            throw new ParseException("Expected 'IN'.", tokens.getNext());
+        }
+
+        Ast.Expr iterable = parseExpr();
+
+        if (!tokens.match(")")) {
+            throw new ParseException("Expected ')'.", tokens.getNext());
+        }
+        if (!tokens.match("{")) {
+            throw new ParseException("Expected '{'.", tokens.getNext());
+        }
+
+        List<Ast.Stmt> body = new ArrayList<>();
+        while (!tokens.peek("}")) {
+            body.add(parseStmt());
+        }
+
+        if (!tokens.match("}")) {
+            throw new ParseException("Expected '}'.", tokens.getNext());
+        }
+
+        return new Ast.Stmt.For(name, iterable, body);
     }
 
     private Ast.Stmt parseReturnStmt() throws ParseException {
-        throw new UnsupportedOperationException("TODO"); //TODO
+        if (!tokens.match("RETURN")) {
+            throw new ParseException("Expected 'RETURN'.", tokens.getNext());
+        }
+
+        Optional<Ast.Expr> value = Optional.empty();
+
+        if (!tokens.peek(";")) {
+            value = Optional.of(parseExpr());
+        }
+
+        if (!tokens.match(";")) {
+            throw new ParseException("Expected ';'.", tokens.getNext());
+        }
+
+        return new Ast.Stmt.Return(value);
     }
 
     private Ast.Stmt parseExpressionOrAssignmentStmt() throws ParseException {
-        throw new UnsupportedOperationException("TODO"); //TODO
+        Ast.Expr left = parseExpr();
+
+        if (tokens.match("=")) {
+            Ast.Expr value = parseExpr();
+
+            if (!tokens.match(";")) {
+                throw new ParseException("Expected ';'.", tokens.getNext());
+            }
+
+            return new Ast.Stmt.Assignment(left, value);
+        }
+
+        if (!tokens.match(";")) {
+            throw new ParseException("Expected ';'.", tokens.getNext());
+        }
+
+        return new Ast.Stmt.Expression(left);
     }
 
     private Ast.Expr parseExpr() throws ParseException {
-        throw new UnsupportedOperationException("TODO"); //TODO
+        return parseLogicalExpr();~
     }
 
     private Ast.Expr parseLogicalExpr() throws ParseException {
