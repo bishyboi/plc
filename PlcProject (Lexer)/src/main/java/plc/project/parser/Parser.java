@@ -15,7 +15,8 @@ import java.util.Optional;
  * calling that function. Recursive rules are therefore supported by actual
  * recursive calls, while operator precedence is encoded via the grammar.
  *
- * <p>The parser has a similar architecture to the lexer, just with
+ * <p>
+ * The parser has a similar architecture to the lexer, just with
  * {@link Token}s instead of characters. As before, {@link TokenStream#peek} and
  * {@link TokenStream#match} help with traversing the token stream. Instead of
  * emitting tokens, you will instead need to extract the literal value via
@@ -50,6 +51,7 @@ public final class Parser {
         return new Ast.Source(statements);
     }
 
+    // pick statement kind by first token
     private Ast.Stmt parseStmt() throws ParseException {
         if (tokens.peek("LET")) {
             return parseLetStmt();
@@ -66,21 +68,25 @@ public final class Parser {
         }
     }
 
+    // let name [= expr] ;
     private Ast.Stmt parseLetStmt() throws ParseException {
+        // this shouldn't occur, but being safe
         if (!tokens.match("LET")) {
             throw new ParseException("Expected 'LET'.", tokens.getNext());
         }
-
         if (!tokens.match(Token.Type.IDENTIFIER)) {
             throw new ParseException("Expected variable name.", tokens.getNext());
         }
         String name = tokens.get(-1).literal();
 
+        // after the equals sign which must come after the variable,
+        // we can just call the expression operator to take care of the rest
         Optional<Ast.Expr> value = Optional.empty();
         if (tokens.match("=")) {
             value = Optional.of(parseExpr());
         }
 
+        // the line must end in a semi-colon
         if (!tokens.match(";")) {
             throw new ParseException("Expected ';'.", tokens.getNext());
         }
@@ -88,22 +94,20 @@ public final class Parser {
         return new Ast.Stmt.Let(name, value);
     }
 
+    // def name ( params ) do body end
     private Ast.Stmt parseDefStmt() throws ParseException {
         if (!tokens.match("DEF")) {
             throw new ParseException("Expected 'DEF'.", tokens.getNext());
         }
-
         if (!tokens.match(Token.Type.IDENTIFIER)) {
             throw new ParseException("Expected function name.", tokens.getNext());
         }
         String name = tokens.get(-1).literal();
-
         if (!tokens.match("(")) {
             throw new ParseException("Expected '('.", tokens.getNext());
         }
 
         List<String> parameters = new ArrayList<>();
-
         if (!tokens.peek(")")) {
             do {
                 if (!tokens.match(Token.Type.IDENTIFIER)) {
@@ -112,15 +116,12 @@ public final class Parser {
                 parameters.add(tokens.get(-1).literal());
             } while (tokens.match(","));
         }
-
         if (!tokens.match(")")) {
             throw new ParseException("Expected ')'.", tokens.getNext());
         }
-
         if (!tokens.match("DO")) {
             throw new ParseException("Expected 'DO'.", tokens.getNext());
         }
-
         List<Ast.Stmt> body = new ArrayList<>();
         while (!tokens.peek("END")) {
             body.add(parseStmt());
@@ -133,6 +134,7 @@ public final class Parser {
         return new Ast.Stmt.Def(name, parameters, body);
     }
 
+    // if expr do then [else else] end
     private Ast.Stmt parseIfStmt() throws ParseException {
         if (!tokens.match("IF")) {
             throw new ParseException("Expected 'IF'.", tokens.getNext());
@@ -154,6 +156,7 @@ public final class Parser {
                 elseStmts.add(parseStmt());
             }
         }
+        // single end closes if or else
         if (!tokens.match("END")) {
             throw new ParseException("Expected 'END'.", tokens.getNext());
         }
@@ -161,6 +164,7 @@ public final class Parser {
         return new Ast.Stmt.If(condition, thenStmts, elseStmts);
     }
 
+    // for name in expr do body end
     private Ast.Stmt parseForStmt() throws ParseException {
         if (!tokens.match("FOR")) {
             throw new ParseException("Expected 'FOR'.", tokens.getNext());
@@ -192,11 +196,12 @@ public final class Parser {
         return new Ast.Stmt.For(name, iterable, body);
     }
 
+    // return [expr] ; or return if expr ;
     private Ast.Stmt parseReturnStmt() throws ParseException {
         if (!tokens.match("RETURN")) {
             throw new ParseException("Expected 'RETURN'.", tokens.getNext());
         }
-
+        // return if cond ; -> if cond do return ; end
         if (tokens.match("IF")) {
             Ast.Expr condition = parseExpr();
             if (!tokens.match(";")) {
@@ -217,19 +222,16 @@ public final class Parser {
         return new Ast.Stmt.Return(value);
     }
 
+    // expr ; or left = value ;
     private Ast.Stmt parseExpressionOrAssignmentStmt() throws ParseException {
         Ast.Expr left = parseExpr();
-
         if (tokens.match("=")) {
             Ast.Expr value = parseExpr();
-
             if (!tokens.match(";")) {
                 throw new ParseException("Expected ';'.", tokens.getNext());
             }
-
             return new Ast.Stmt.Assignment(left, value);
         }
-
         if (!tokens.match(";")) {
             throw new ParseException("Expected ';'.", tokens.getNext());
         }
@@ -237,18 +239,22 @@ public final class Parser {
         return new Ast.Stmt.Expression(left);
     }
 
+    // entry for expressions (starts at logical, delegates down)
     private Ast.Expr parseExpr() throws ParseException {
         return parseLogicalExpr();
     }
 
+    // logical level (placeholder, goes to comparison)
     private Ast.Expr parseLogicalExpr() throws ParseException {
         return parseComparisonExpr();
     }
 
+    // comparison level (placeholder, goes to additive)
     private Ast.Expr parseComparisonExpr() throws ParseException {
         return parseAdditiveExpr();
     }
 
+    // + and - (left-assoc, lower precedence than * /)
     private Ast.Expr parseAdditiveExpr() throws ParseException {
         Ast.Expr left = parseMultiplicativeExpr();
         while (true) {
@@ -263,8 +269,10 @@ public final class Parser {
         return left;
     }
 
+    // * and / (left-assoc, higher precedence than + -)
     private Ast.Expr parseMultiplicativeExpr() throws ParseException {
         Ast.Expr left = parseSecondaryExpr();
+        // chain * / left to right
         while (true) {
             if (tokens.match("*")) {
                 left = new Ast.Expr.Binary("*", left, parseSecondaryExpr());
@@ -277,6 +285,7 @@ public final class Parser {
         return left;
     }
 
+    // primary then . name or . name ( args )
     private Ast.Expr parseSecondaryExpr() throws ParseException {
         Ast.Expr left = parsePrimaryExpr();
         while (tokens.peek(".")) {
@@ -285,6 +294,7 @@ public final class Parser {
         return left;
     }
 
+    // . name or . name ( args )
     private Ast.Expr parsePropertyOrMethod(Ast.Expr receiver) throws ParseException {
         if (!tokens.match(".")) {
             throw new ParseException("Expected '.'.", tokens.getNext());
@@ -308,6 +318,7 @@ public final class Parser {
         return new Ast.Expr.Property(receiver, name);
     }
 
+    // literal, group, object, or variable/function (try in order)
     private Ast.Expr parsePrimaryExpr() throws ParseException {
         if (tokens.peek("NIL") || tokens.peek("TRUE") || tokens.peek("FALSE") ||
                 tokens.peek(Token.Type.INTEGER) || tokens.peek(Token.Type.DECIMAL) ||
@@ -323,6 +334,7 @@ public final class Parser {
         return parseVariableOrFunctionExpr();
     }
 
+    // nil, true/false, integer, decimal, char, string
     private Ast.Expr parseLiteralExprValue() throws ParseException {
         if (tokens.match("NIL")) {
             return new Ast.Expr.Literal(null);
@@ -352,10 +364,12 @@ public final class Parser {
         throw new ParseException("Expected literal.", tokens.getNext());
     }
 
+    // strip quotes, handle \n \t \' \\ etc
     private static char parseCharacterLiteral(String lit) {
         if (lit.length() >= 2 && lit.charAt(0) == '\'' && lit.charAt(lit.length() - 1) == '\'') {
             String inner = lit.substring(1, lit.length() - 1);
-            if (inner.length() == 1) return inner.charAt(0);
+            if (inner.length() == 1)
+                return inner.charAt(0);
             if (inner.length() == 2 && inner.charAt(0) == '\\') {
                 return switch (inner.charAt(1)) {
                     case 'n' -> '\n';
@@ -370,6 +384,7 @@ public final class Parser {
         return lit.length() > 0 ? lit.charAt(0) : '\0';
     }
 
+    // unescape "..." with \\n etc
     private static String parseStringLiteral(String lit) {
         if (lit.length() >= 2 && lit.charAt(0) == '"' && lit.charAt(lit.length() - 1) == '"') {
             StringBuilder sb = new StringBuilder();
@@ -392,6 +407,7 @@ public final class Parser {
         return lit;
     }
 
+    // parenthesized expression ( expr )
     private Ast.Expr parseGroupExpr() throws ParseException {
         if (!tokens.match("(")) {
             throw new ParseException("Expected '('.", tokens.getNext());
@@ -406,6 +422,7 @@ public final class Parser {
         return new Ast.Expr.Group(expr);
     }
 
+    // object do let/def ... end (fields and methods)
     private Ast.Expr parseObjectExpr() throws ParseException {
         if (!tokens.match("OBJECT")) {
             throw new ParseException("Expected 'OBJECT'.", tokens.getNext());
@@ -417,11 +434,13 @@ public final class Parser {
         List<Ast.Stmt.Def> methods = new ArrayList<>();
         while (!tokens.peek("END")) {
             if (tokens.peek("LET")) {
+                // field
                 Ast.Stmt let = parseLetStmt();
                 if (let instanceof Ast.Stmt.Let letStmt) {
                     fields.add(letStmt);
                 }
             } else if (tokens.peek("DEF")) {
+                // method
                 methods.add((Ast.Stmt.Def) parseDefStmt());
             } else {
                 throw new ParseException("Expected field or method in object.", tokens.getNext());
@@ -433,6 +452,7 @@ public final class Parser {
         return new Ast.Expr.ObjectExpr(Optional.empty(), fields, methods);
     }
 
+    // identifier -> variable ; identifier ( args ) -> function call
     private Ast.Expr parseVariableOrFunctionExpr() throws ParseException {
         if (!tokens.match(Token.Type.IDENTIFIER)) {
             throw new ParseException("Expected variable or function.", tokens.getNext());
@@ -450,6 +470,7 @@ public final class Parser {
             }
             return new Ast.Expr.Function(name, arguments);
         }
+        // no ( so variable
         return new Ast.Expr.Variable(name);
     }
 

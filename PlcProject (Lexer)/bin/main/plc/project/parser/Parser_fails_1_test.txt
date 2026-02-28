@@ -144,11 +144,8 @@ public final class Parser {
             throw new ParseException("Expected 'DO'.", tokens.getNext());
         }
         List<Ast.Stmt> thenStmts = new ArrayList<>();
-        while (!tokens.peek("END")) {
+        while (!tokens.peek("END") && !tokens.peek("ELSE")) {
             thenStmts.add(parseStmt());
-        }
-        if (!tokens.match("END")) {
-            throw new ParseException("Expected 'END'.", tokens.getNext());
         }
 
         List<Ast.Stmt> elseStmts = new ArrayList<>();
@@ -156,9 +153,9 @@ public final class Parser {
             while (!tokens.peek("END")) {
                 elseStmts.add(parseStmt());
             }
-            if (!tokens.match("END")) {
-                throw new ParseException("Expected 'END'.", tokens.getNext());
-            }
+        }
+        if (!tokens.match("END")) {
+            throw new ParseException("Expected 'END'.", tokens.getNext());
         }
 
         return new Ast.Stmt.If(condition, thenStmts, elseStmts);
