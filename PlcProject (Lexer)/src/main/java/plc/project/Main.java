@@ -1,5 +1,10 @@
 package plc.project;
 
+import plc.project.evaluator.Environment;
+import plc.project.evaluator.EvaluateException;
+import plc.project.evaluator.Evaluator;
+import plc.project.evaluator.RuntimeValue;
+import plc.project.evaluator.Scope;
 import plc.project.lexer.LexException;
 import plc.project.lexer.Lexer;
 import plc.project.parser.ParseException;
@@ -18,10 +23,10 @@ import java.util.regex.Pattern;
 public final class Main {
 
     private interface Repl {
-        void evaluate(String input) throws LexException, ParseException;
+        void evaluate(String input) throws LexException, ParseException, EvaluateException;
     }
 
-    private static final Repl REPL = Main::parser; //edit for manual testing
+    private static final Repl REPL = Main::evaluator; //edit for manual testing
 
     static void main() {
         System.out.println("REPL running, enter empty line for multiline input.");
@@ -29,7 +34,7 @@ public final class Main {
             var input = readInput();
             try {
                 REPL.evaluate(input);
-            } catch (LexException | ParseException e) {
+            } catch (LexException | ParseException | EvaluateException e) {
                 System.out.println(e.getClass().getSimpleName() + ": " + e.getMessage());
             } catch (RuntimeException e) {
                 e.printStackTrace(System.err);
@@ -49,6 +54,30 @@ public final class Main {
         var tokens = new Lexer(input).lex();
         var ast = new Parser(tokens).parse("source"); //edit for manual testing
         System.out.println(prettify(ast.toString()));
+    }
+
+    private static final Evaluator EVALUATOR; // Global instance to preserve Evaluator state
+
+    static {
+        var scope = Environment.scope();
+        EVALUATOR = new Evaluator(new Scope(scope));
+        scope.define("log", new RuntimeValue.Function("log", arguments -> {
+            if (arguments.size() != 1) {
+                throw new EvaluateException("Invalid 'log' invocation, incorrect number of arguments (expected 1, received " + arguments.size() + ").");
+            }
+            System.out.println("log: " + arguments.getFirst().print());
+            return arguments.getFirst();
+        }));
+        scope.define("scope", new RuntimeValue.Function("dynamic_scope", _ -> {
+            return new RuntimeValue.Primitive(EVALUATOR.getScope()); //returns *current* scope
+        }));
+    }
+
+    private static void evaluator(String input) throws LexException, ParseException, EvaluateException {
+        var tokens = new Lexer(input).lex();
+        var ast = new Parser(tokens).parse("source"); //edit for manual testing
+        var value = EVALUATOR.visit(ast);
+        System.out.println(prettify(value.toString()));
     }
 
     private static final Scanner SCANNER = new Scanner(System.in);
