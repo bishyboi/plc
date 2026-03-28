@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="plc.project.lexer.LexerTests" tests="48" skipped="0" failures="0" errors="0" timestamp="2026-03-24T23:26:04.825Z" hostname="BISHOYP" time="0.068">
+  <properties/>
+  <testcase name="[1] Character Unterminated, 'u, 2" classname="plc.project.lexer.LexerTests" time="0.003"/>
+  <testcase name="[2] Character Multiple, 'abc', 2" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[3] String Invalid Escape, &quot;invalid\escape&quot;, 9" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[1] Alphabetic, 'c', true" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[2] Newline Escape, '\n', true" classname="plc.project.lexer.LexerTests" time="0.0"/>
+  <testcase name="[3] Unterminated, 'u, false" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[4] Multiple, 'abc', false" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[1] Variable, LET x = 5;, [Token[type=IDENTIFIER, literal=LET], Token[type=IDENTIFIER, literal=x], Token[type=OPERATOR, literal==], Token[type=INTEGER, literal=5], Token[type=OPERATOR, literal=;]]" classname="plc.project.lexer.LexerTests" time="0.002"/>
+  <testcase name="[2] Print Function, print(&quot;Hello, World!&quot;);, [Token[type=IDENTIFIER, literal=print], Token[type=OPERATOR, literal=(], Token[type=STRING, literal=&quot;Hello, World!&quot;], Token[type=OPERATOR, literal=)], Token[type=OPERATOR, literal=;]]" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[1] Space,  , true" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[2] Newline, &#10;, true" classname="plc.project.lexer.LexerTests" time="0.0"/>
+  <testcase name="[3] Multiple,     &#10;    , true" classname="plc.project.lexer.LexerTests" time="0.0"/>
+  <testcase name="[1] Character, (, true" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[2] Comparison, &lt;=, true" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[3] Whitespace,  , false" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[4] Double Quote, &quot;, false" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[1] Empty, //, true" classname="plc.project.lexer.LexerTests" time="0.0"/>
+  <testcase name="[2] Text, //comment, true" classname="plc.project.lexer.LexerTests" time="0.0"/>
+  <testcase name="[1] Decimal, 1.0, true" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[2] Multiple Digits, 123.456, true" classname="plc.project.lexer.LexerTests" time="0.0"/>
+  <testcase name="[3] Positive Decimal, +1.0, true" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[4] Negative Decimal, -1.0, true" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[5] Zero Decimal, 0.0, true" classname="plc.project.lexer.LexerTests" time="0.0"/>
+  <testcase name="[6] Scientific Decimal, 1.0e10, true" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[7] Scientific Positive Exponent, 1.5e+10, true" classname="plc.project.lexer.LexerTests" time="0.0"/>
+  <testcase name="[8] Scientific Negative Exponent, 1.5E-10, true" classname="plc.project.lexer.LexerTests" time="0.0"/>
+  <testcase name="[9] Trailing Decimal, 1., false" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[1] Whitespace, first second, [Token[type=IDENTIFIER, literal=first], Token[type=IDENTIFIER, literal=second]]" classname="plc.project.lexer.LexerTests" time="0.0"/>
+  <testcase name="[2] Identifier Leading Hyphen, -five, [Token[type=OPERATOR, literal=-], Token[type=IDENTIFIER, literal=five]]" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[3] Identifier Leading Digit, 1fish2fish, [Token[type=INTEGER, literal=1], Token[type=IDENTIFIER, literal=fish2fish]]" classname="plc.project.lexer.LexerTests" time="0.0"/>
+  <testcase name="[4] Integer Missing Exponent Digits, 1e, [Token[type=INTEGER, literal=1], Token[type=IDENTIFIER, literal=e]]" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[5] Decimal Missing Decimal Digits, 1., [Token[type=INTEGER, literal=1], Token[type=OPERATOR, literal=.]]" classname="plc.project.lexer.LexerTests" time="0.0"/>
+  <testcase name="[6] Operator Multiple Operators, &lt;=&gt;, [Token[type=OPERATOR, literal=&lt;=], Token[type=OPERATOR, literal=&gt;]]" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[1] Single Digit, 1, true" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[2] Multiple Digits, 123, true" classname="plc.project.lexer.LexerTests" time="0.0"/>
+  <testcase name="[3] Exponent, 1e10, true" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[4] Missing Exponent Digits, 1e, false" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[1] Empty, &quot;&quot;, true" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[2] Alphabetic, &quot;string&quot;, true" classname="plc.project.lexer.LexerTests" time="0.0"/>
+  <testcase name="[3] Newline Escape, &quot;Hello,\nWorld&quot;, true" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[4] All Escapes, &quot;\b\n\r\t\'\&quot;\\&quot;, true" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[5] Quotes in String, &quot;He said \&quot;Hello\&quot;&quot;, true" classname="plc.project.lexer.LexerTests" time="0.0"/>
+  <testcase name="[6] Backslash in String, &quot;C:\\Windows&quot;, true" classname="plc.project.lexer.LexerTests" time="0.0"/>
+  <testcase name="[7] Invalid Escape, &quot;invalid\escape&quot;, false" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <testcase name="[1] Alphabetic, getName, true" classname="plc.project.lexer.LexerTests" time="0.0"/>
+  <testcase name="[2] Alphanumeric, thelegend27, true" classname="plc.project.lexer.LexerTests" time="0.0"/>
+  <testcase name="[3] Leading Hyphen, -five, false" classname="plc.project.lexer.LexerTests" time="0.0"/>
+  <testcase name="[4] Leading Digit, 1fish2fish, false" classname="plc.project.lexer.LexerTests" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - EvaluatorTests</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>EvaluatorTests</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/plc.project.evaluator.html">plc.project.evaluator</a> &gt; EvaluatorTests</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">48</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">0.086s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a href="#">Tests</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Method name</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">[1] Variable, Source[statements=[Assignment[expression=Variable[name=variable], value=Literal[value=value, class=String]], Expression[expression=Function[name=log, arguments=[Variable[name=variable]]]]]], Primitive[value=value, class=String], [Primitive[value=value, class=String]]</td>
+<td class="success">testAssignmentStmt(String, Object, Object, List)[1]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Property, Source[statements=[Assignment[expression=Property[receiver=Variable[name=object], name=property], value=Literal[value=value, class=String]], Expression[expression=Property[receiver=Variable[name=object], name=property]]]], Primitive[value=value, class=String], []</td>
+<td class="success">testAssignmentStmt(String, Object, Object, List)[2]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[10] OpAND False, Binary[operator=AND, left=Literal[value=true, class=Boolean], right=Literal[value=false, class=Boolean]], Primitive[value=false, class=Boolean], []</td>
+<td class="success">testBinaryExpr(String, Object, Object, List)[10]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[11] OpOR True Short-Circuit, Binary[operator=OR, left=Function[name=log, arguments=[Literal[value=true, class=Boolean]]], right=Function[name=log, arguments=[Literal[value=false, class=Boolean]]]], Primitive[value=true, class=Boolean], [Primitive[value=true, class=Boolean]]</td>
+<td class="success">testBinaryExpr(String, Object, Object, List)[11]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Op+ Integer Addition, Binary[operator=+, left=Literal[value=1, class=BigInteger], right=Literal[value=2, class=BigInteger]], Primitive[value=3, class=BigInteger], []</td>
+<td class="success">testBinaryExpr(String, Object, Object, List)[1]</td>
+<td class="success">0.044s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Op+ Decimal Addition, Binary[operator=+, left=Literal[value=1.0, class=BigDecimal], right=Literal[value=2.0, class=BigDecimal]], Primitive[value=3.0, class=BigDecimal], []</td>
+<td class="success">testBinaryExpr(String, Object, Object, List)[2]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[3] Op+ String Concatenation, Binary[operator=+, left=Literal[value=left, class=String], right=Literal[value=right, class=String]], Primitive[value=leftright, class=String], []</td>
+<td class="success">testBinaryExpr(String, Object, Object, List)[3]</td>
+<td class="success">0.002s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[4] Op+ Evaluation Order Left Validation Error, Binary[operator=+, left=Literal[value=false, class=Boolean], right=Function[name=log, arguments=[Literal[value=true, class=Boolean]]]], plc.project.evaluator.EvaluateException: unused, [Primitive[value=true, class=Boolean]]</td>
+<td class="success">testBinaryExpr(String, Object, Object, List)[4]</td>
+<td class="success">0.002s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[5] Op- Evaluation Order Left Validation Error, Binary[operator=-, left=Literal[value=invalid, class=String], right=Function[name=log, arguments=[Literal[value=unevaluated, class=String]]]], plc.project.evaluator.EvaluateException: unused, []</td>
+<td class="success">testBinaryExpr(String, Object, Object, List)[5]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[6] Op* Evaluation Order Left Execution Error, Binary[operator=*, left=Variable[name=undefined], right=Function[name=log, arguments=[Literal[value=unevaluated, class=String]]]], plc.project.evaluator.EvaluateException: unused, []</td>
+<td class="success">testBinaryExpr(String, Object, Object, List)[6]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[7] Op/ Decimal Rounding Down, Binary[operator=/, left=Literal[value=5, class=BigDecimal], right=Literal[value=2, class=BigDecimal]], Primitive[value=2, class=BigDecimal], []</td>
+<td class="success">testBinaryExpr(String, Object, Object, List)[7]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[8] Op&lt; Integer True, Binary[operator=&lt;, left=Literal[value=1, class=BigInteger], right=Literal[value=2, class=BigInteger]], Primitive[value=true, class=Boolean], []</td>
+<td class="success">testBinaryExpr(String, Object, Object, List)[8]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[9] Op== Decimal False, Binary[operator===, left=Literal[value=1.0, class=BigDecimal], right=Literal[value=2.0, class=BigDecimal]], Primitive[value=false, class=Boolean], []</td>
+<td class="success">testBinaryExpr(String, Object, Object, List)[9]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Invocation, Source[statements=[Def[name=name, parameters=[], body=[Expression[expression=Function[name=log, arguments=[Literal[value=invoked, class=String]]]]]], Expression[expression=Function[name=name, arguments=[]]]]], Primitive[value=null, class=N/A], [Primitive[value=invoked, class=String]]</td>
+<td class="success">testDefStmt(String, Object, Object, List)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Parameter, Source[statements=[Def[name=name, parameters=[parameter], body=[Expression[expression=Function[name=log, arguments=[Variable[name=parameter]]]]]], Expression[expression=Function[name=name, arguments=[Literal[value=argument, class=String]]]]]], Primitive[value=null, class=N/A], [Primitive[value=argument, class=String]]</td>
+<td class="success">testDefStmt(String, Object, Object, List)[2]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[3] Return Value, Source[statements=[Def[name=name, parameters=[], body=[Return[value=Optional[Literal[value=value, class=String]]]]], Expression[expression=Function[name=name, arguments=[]]]]], Primitive[value=value, class=String], []</td>
+<td class="success">testDefStmt(String, Object, Object, List)[3]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] sqrt, Source[statements=[Expression[expression=Function[name=sqrt, arguments=[Literal[value=4.0, class=BigDecimal]]]]]], Primitive[value=2, class=BigDecimal], []</td>
+<td class="success">testEnvironment(String, Object, Object, List)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] range, Source[statements=[Expression[expression=Function[name=range, arguments=[Literal[value=1, class=BigInteger], Literal[value=5, class=BigInteger]]]]]], Primitive[value=[Primitive[value=1, class=BigInteger], Primitive[value=2, class=BigInteger], Primitive[value=3, class=BigInteger], Primitive[value=4, class=BigInteger]], class=ListN], []</td>
+<td class="success">testEnvironment(String, Object, Object, List)[2]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Variable, Source[statements=[Expression[expression=Variable[name=variable]]]], Primitive[value=variable, class=String], []</td>
+<td class="success">testExpressionStmt(String, Object, Object, List)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Function, Source[statements=[Expression[expression=Function[name=function, arguments=[Literal[value=argument, class=String]]]]]], Primitive[value=[Primitive[value=argument, class=String]], class=List12], []</td>
+<td class="success">testExpressionStmt(String, Object, Object, List)[2]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] For, Source[statements=[For[name=element, expression=Function[name=list, arguments=[Literal[value=1, class=BigInteger], Literal[value=2, class=BigInteger], Literal[value=3, class=BigInteger]]], body=[Expression[expression=Function[name=log, arguments=[Variable[name=element]]]]]]]], Primitive[value=null, class=N/A], [Primitive[value=1, class=BigInteger], Primitive[value=2, class=BigInteger], Primitive[value=3, class=BigInteger]]</td>
+<td class="success">testForStmt(String, Object, Object, List)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Range, Source[statements=[For[name=element, expression=Function[name=range, arguments=[Literal[value=1, class=BigInteger], Literal[value=5, class=BigInteger]]], body=[Expression[expression=Function[name=log, arguments=[Variable[name=element]]]]]]]], Primitive[value=null, class=N/A], [Primitive[value=1, class=BigInteger], Primitive[value=2, class=BigInteger], Primitive[value=3, class=BigInteger], Primitive[value=4, class=BigInteger]]</td>
+<td class="success">testForStmt(String, Object, Object, List)[2]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Function, Function[name=function, arguments=[]], Primitive[value=[], class=ListN], []</td>
+<td class="success">testFunctionExpr(String, Object, Object, List)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Argument, Function[name=function, arguments=[Literal[value=argument, class=String]]], Primitive[value=[Primitive[value=argument, class=String]], class=List12], []</td>
+<td class="success">testFunctionExpr(String, Object, Object, List)[2]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[3] Undefined, Function[name=undefined, arguments=[Function[name=log, arguments=[Literal[value=argument, class=String]]]]], plc.project.evaluator.EvaluateException: unused, []</td>
+<td class="success">testFunctionExpr(String, Object, Object, List)[3]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Group, Group[expression=Literal[value=expr, class=String]], Primitive[value=expr, class=String], []</td>
+<td class="success">testGroupExpr(String, Object, Object, List)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Then, Source[statements=[If[condition=Literal[value=true, class=Boolean], thenBody=[Expression[expression=Function[name=log, arguments=[Literal[value=then, class=String]]]]], elseBody=[Expression[expression=Function[name=log, arguments=[Literal[value=else, class=String]]]]]]]], Primitive[value=then, class=String], [Primitive[value=then, class=String]]</td>
+<td class="success">testIfStmt(String, Object, Object, List)[1]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Else, Source[statements=[If[condition=Literal[value=false, class=Boolean], thenBody=[Expression[expression=Function[name=log, arguments=[Literal[value=then, class=String]]]]], elseBody=[Expression[expression=Function[name=log, arguments=[Literal[value=else, class=String]]]]]]]], Primitive[value=else, class=String], [Primitive[value=else, class=String]]</td>
+<td class="success">testIfStmt(String, Object, Object, List)[2]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Declaration, Source[statements=[Let[name=name, value=Optional.empty], Expression[expression=Function[name=log, arguments=[Variable[name=name]]]]]], Primitive[value=null, class=N/A], [Primitive[value=null, class=N/A]]</td>
+<td class="success">testLetStmt(String, Object, Object, List)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Initialization, Source[statements=[Let[name=name, value=Optional[Literal[value=value, class=String]]], Expression[expression=Function[name=log, arguments=[Variable[name=name]]]]]], Primitive[value=value, class=String], [Primitive[value=value, class=String]]</td>
+<td class="success">testLetStmt(String, Object, Object, List)[2]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[3] Redefined, Source[statements=[Let[name=name, value=Optional.empty], Let[name=name, value=Optional.empty]]], plc.project.evaluator.EvaluateException: unused, []</td>
+<td class="success">testLetStmt(String, Object, Object, List)[3]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[4] Shadowed, Source[statements=[Let[name=variable, value=Optional.empty]]], Primitive[value=null, class=N/A], []</td>
+<td class="success">testLetStmt(String, Object, Object, List)[4]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Boolean, Literal[value=true, class=Boolean], Primitive[value=true, class=Boolean], []</td>
+<td class="success">testLiteralExpr(String, Object, Object, List)[1]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Integer, Literal[value=1, class=BigInteger], Primitive[value=1, class=BigInteger], []</td>
+<td class="success">testLiteralExpr(String, Object, Object, List)[2]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[3] String, Literal[value=string, class=String], Primitive[value=string, class=String], []</td>
+<td class="success">testLiteralExpr(String, Object, Object, List)[3]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Method, Method[receiver=Variable[name=object], name=method, arguments=[Literal[value=argument, class=String]]], Primitive[value=[Primitive[value=argument, class=String]], class=List12], []</td>
+<td class="success">testMethodExpr(String, Object, Object, List)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Field, Property[receiver=ObjectExpr[name=Optional.empty, fields=[Let[name=field, value=Optional[Literal[value=value, class=String]]]], methods=[]], name=field], Primitive[value=value, class=String], []</td>
+<td class="success">testObjectExpr(String, Object, Object, List)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Method, Method[receiver=ObjectExpr[name=Optional.empty, fields=[], methods=[Def[name=method, parameters=[], body=[]]]], name=method, arguments=[]], Primitive[value=null, class=N/A], []</td>
+<td class="success">testObjectExpr(String, Object, Object, List)[2]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[3] Method Parameter, Method[receiver=ObjectExpr[name=Optional.empty, fields=[], methods=[Def[name=method, parameters=[parameter], body=[Return[value=Optional[Variable[name=parameter]]]]]]], name=method, arguments=[Literal[value=argument, class=String]]], Primitive[value=argument, class=String], []</td>
+<td class="success">testObjectExpr(String, Object, Object, List)[3]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Hello World, DEF main() DO
+    log(&quot;Hello, World!&quot;);
+END
+main();
+, Primitive[value=null, class=N/A], [Primitive[value=Hello, World!, class=String]]</td>
+<td class="success">testProgram(String, Object, Object, List)[1]</td>
+<td class="success">0.004s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Property, Property[receiver=Variable[name=object], name=property], Primitive[value=property, class=String], []</td>
+<td class="success">testPropertyExpr(String, Object, Object, List)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Prototypal Inheritance, Property[receiver=Variable[name=object], name=inherited_property], Primitive[value=inherited_property, class=String], []</td>
+<td class="success">testPropertyExpr(String, Object, Object, List)[2]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Inside Function, Source[statements=[Def[name=name, parameters=[], body=[Return[value=Optional[Literal[value=value, class=String]]]]], Expression[expression=Function[name=name, arguments=[]]]]], Primitive[value=value, class=String], []</td>
+<td class="success">testReturnStmt(String, Object, Object, List)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Outside Function, Source[statements=[Return[value=Optional.empty]]], plc.project.evaluator.EvaluateException: unused, []</td>
+<td class="success">testReturnStmt(String, Object, Object, List)[2]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Single, Source[statements=[Expression[expression=Function[name=log, arguments=[Literal[value=value, class=String]]]]]], Primitive[value=value, class=String], [Primitive[value=value, class=String]]</td>
+<td class="success">testSource(String, Object, Object, List)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Multiple, Source[statements=[Expression[expression=Function[name=log, arguments=[Literal[value=1, class=BigInteger]]]], Expression[expression=Function[name=log, arguments=[Literal[value=2, class=BigInteger]]]], Expression[expression=Function[name=log, arguments=[Literal[value=3, class=BigInteger]]]]]], Primitive[value=3, class=BigInteger], [Primitive[value=1, class=BigInteger], Primitive[value=2, class=BigInteger], Primitive[value=3, class=BigInteger]]</td>
+<td class="success">testSource(String, Object, Object, List)[2]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[3] Unhandled Return, Source[statements=[Return[value=Optional.empty]]], plc.project.evaluator.EvaluateException: unused, []</td>
+<td class="success">testSource(String, Object, Object, List)[3]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Variable, Variable[name=variable], Primitive[value=variable, class=String], []</td>
+<td class="success">testVariableExpr(String, Object, Object, List)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 9.2.1</a> at Mar 24, 2026, 7:26:05 PM</p>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - ParserTests</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>ParserTests</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/plc.project.parser.html">plc.project.parser</a> &gt; ParserTests</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">41</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">0.046s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a href="#">Tests</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Method name</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">[1] Variable, [Token[type=IDENTIFIER, literal=variable], Token[type=OPERATOR, literal==], Token[type=IDENTIFIER, literal=value], Token[type=OPERATOR, literal=;]], Assignment[expression=Variable[name=variable], value=Variable[name=value]]</td>
+<td class="success">testAssignmentStmt(String, Object, Object)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Missing Value, [Token[type=IDENTIFIER, literal=object], Token[type=OPERATOR, literal=.], Token[type=IDENTIFIER, literal=property], Token[type=OPERATOR, literal==], Token[type=OPERATOR, literal=;]], plc.project.parser.ParseException: 
+ - @ token Token[type=OPERATOR, literal=;]</td>
+<td class="success">testAssignmentStmt(String, Object, Object)[2]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Addition, [Token[type=IDENTIFIER, literal=left], Token[type=OPERATOR, literal=+], Token[type=IDENTIFIER, literal=right]], Binary[operator=+, left=Variable[name=left], right=Variable[name=right]]</td>
+<td class="success">testBinaryExpr(String, Object, Object)[1]</td>
+<td class="success">0.002s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Multiplication, [Token[type=IDENTIFIER, literal=left], Token[type=OPERATOR, literal=*], Token[type=IDENTIFIER, literal=right]], Binary[operator=*, left=Variable[name=left], right=Variable[name=right]]</td>
+<td class="success">testBinaryExpr(String, Object, Object)[2]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[3] Equal Precedence, [Token[type=IDENTIFIER, literal=first], Token[type=OPERATOR, literal=+], Token[type=IDENTIFIER, literal=second], Token[type=OPERATOR, literal=+], Token[type=IDENTIFIER, literal=third]], Binary[operator=+, left=Binary[operator=+, left=Variable[name=first], right=Variable[name=second]], right=Variable[name=third]]</td>
+<td class="success">testBinaryExpr(String, Object, Object)[3]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[4] Lower Precedence, [Token[type=IDENTIFIER, literal=first], Token[type=OPERATOR, literal=+], Token[type=IDENTIFIER, literal=second], Token[type=OPERATOR, literal=*], Token[type=IDENTIFIER, literal=third]], Binary[operator=+, left=Variable[name=first], right=Binary[operator=*, left=Variable[name=second], right=Variable[name=third]]]</td>
+<td class="success">testBinaryExpr(String, Object, Object)[4]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[5] Higher Precedence, [Token[type=IDENTIFIER, literal=first], Token[type=OPERATOR, literal=*], Token[type=IDENTIFIER, literal=second], Token[type=OPERATOR, literal=+], Token[type=IDENTIFIER, literal=third]], Binary[operator=+, left=Binary[operator=*, left=Variable[name=first], right=Variable[name=second]], right=Variable[name=third]]</td>
+<td class="success">testBinaryExpr(String, Object, Object)[5]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Def, [Token[type=IDENTIFIER, literal=DEF], Token[type=IDENTIFIER, literal=name], Token[type=OPERATOR, literal=(], Token[type=OPERATOR, literal=)], Token[type=IDENTIFIER, literal=DO], Token[type=IDENTIFIER, literal=END]], Def[name=name, parameters=[], body=[]]</td>
+<td class="success">testDefStmt(String, Object, Object)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Parameter, [Token[type=IDENTIFIER, literal=DEF], Token[type=IDENTIFIER, literal=name], Token[type=OPERATOR, literal=(], Token[type=IDENTIFIER, literal=parameter], Token[type=OPERATOR, literal=)], Token[type=IDENTIFIER, literal=DO], Token[type=IDENTIFIER, literal=END]], Def[name=name, parameters=[parameter], body=[]]</td>
+<td class="success">testDefStmt(String, Object, Object)[2]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Variable, [Token[type=IDENTIFIER, literal=variable], Token[type=OPERATOR, literal=;]], Expression[expression=Variable[name=variable]]</td>
+<td class="success">testExpressionStmt(String, Object, Object)[1]</td>
+<td class="success">0.002s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Function, [Token[type=IDENTIFIER, literal=function], Token[type=OPERATOR, literal=(], Token[type=OPERATOR, literal=)], Token[type=OPERATOR, literal=;]], Expression[expression=Function[name=function, arguments=[]]]</td>
+<td class="success">testExpressionStmt(String, Object, Object)[2]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] For, [Token[type=IDENTIFIER, literal=FOR], Token[type=IDENTIFIER, literal=name], Token[type=IDENTIFIER, literal=IN], Token[type=IDENTIFIER, literal=expr], Token[type=IDENTIFIER, literal=DO], Token[type=IDENTIFIER, literal=stmt], Token[type=OPERATOR, literal=;], Token[type=IDENTIFIER, literal=END]], For[name=name, expression=Variable[name=expr], body=[Expression[expression=Variable[name=stmt]]]]</td>
+<td class="success">testForStmt(String, Object, Object)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Missing In, [Token[type=IDENTIFIER, literal=FOR], Token[type=IDENTIFIER, literal=name], Token[type=IDENTIFIER, literal=expr], Token[type=IDENTIFIER, literal=DO], Token[type=IDENTIFIER, literal=stmt], Token[type=OPERATOR, literal=;], Token[type=IDENTIFIER, literal=END]], plc.project.parser.ParseException: 
+ - @ token Token[type=IDENTIFIER, literal=expr]</td>
+<td class="success">testForStmt(String, Object, Object)[2]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Function, [Token[type=IDENTIFIER, literal=function], Token[type=OPERATOR, literal=(], Token[type=OPERATOR, literal=)]], Function[name=function, arguments=[]]</td>
+<td class="success">testFunctionExpr(String, Object, Object)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Argument, [Token[type=IDENTIFIER, literal=function], Token[type=OPERATOR, literal=(], Token[type=IDENTIFIER, literal=argument], Token[type=OPERATOR, literal=)]], Function[name=function, arguments=[Variable[name=argument]]]</td>
+<td class="success">testFunctionExpr(String, Object, Object)[2]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Group, [Token[type=OPERATOR, literal=(], Token[type=IDENTIFIER, literal=expr], Token[type=OPERATOR, literal=)]], Group[expression=Variable[name=expr]]</td>
+<td class="success">testGroupExpr(String, Object, Object)[1]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Missing Expression, [Token[type=OPERATOR, literal=(], Token[type=OPERATOR, literal=)]], plc.project.parser.ParseException: 
+ - @ token Token[type=OPERATOR, literal=)]</td>
+<td class="success">testGroupExpr(String, Object, Object)[2]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] If, [Token[type=IDENTIFIER, literal=IF], Token[type=IDENTIFIER, literal=cond], Token[type=IDENTIFIER, literal=DO], Token[type=IDENTIFIER, literal=then], Token[type=OPERATOR, literal=;], Token[type=IDENTIFIER, literal=END]], If[condition=Variable[name=cond], thenBody=[Expression[expression=Variable[name=then]]], elseBody=[]]</td>
+<td class="success">testIfStmt(String, Object, Object)[1]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Else, [Token[type=IDENTIFIER, literal=IF], Token[type=IDENTIFIER, literal=cond], Token[type=IDENTIFIER, literal=DO], Token[type=IDENTIFIER, literal=then], Token[type=OPERATOR, literal=;], Token[type=IDENTIFIER, literal=ELSE], Token[type=IDENTIFIER, literal=else], Token[type=OPERATOR, literal=;], Token[type=IDENTIFIER, literal=END]], If[condition=Variable[name=cond], thenBody=[Expression[expression=Variable[name=then]]], elseBody=[Expression[expression=Variable[name=else]]]]</td>
+<td class="success">testIfStmt(String, Object, Object)[2]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Declaration, [Token[type=IDENTIFIER, literal=LET], Token[type=IDENTIFIER, literal=name], Token[type=OPERATOR, literal=;]], Let[name=name, value=Optional.empty]</td>
+<td class="success">testLetStmt(String, Object, Object)[1]</td>
+<td class="success">0.002s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Initialization, [Token[type=IDENTIFIER, literal=LET], Token[type=IDENTIFIER, literal=name], Token[type=OPERATOR, literal==], Token[type=IDENTIFIER, literal=expr], Token[type=OPERATOR, literal=;]], Let[name=name, value=Optional[Variable[name=expr]]]</td>
+<td class="success">testLetStmt(String, Object, Object)[2]</td>
+<td class="success">0.003s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[3] Missing Semicolon, [Token[type=IDENTIFIER, literal=LET], Token[type=IDENTIFIER, literal=name], Token[type=OPERATOR, literal==], Token[type=IDENTIFIER, literal=expr]], plc.project.parser.ParseException: 
+ - @ token EOF</td>
+<td class="success">testLetStmt(String, Object, Object)[3]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Nil, [Token[type=IDENTIFIER, literal=NIL]], Literal[value=null, class=N/A]</td>
+<td class="success">testLiteralExpr(String, Object, Object)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Boolean, [Token[type=IDENTIFIER, literal=TRUE]], Literal[value=true, class=Boolean]</td>
+<td class="success">testLiteralExpr(String, Object, Object)[2]</td>
+<td class="success">0.005s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[3] Integer, [Token[type=INTEGER, literal=1]], Literal[value=1, class=BigInteger]</td>
+<td class="success">testLiteralExpr(String, Object, Object)[3]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[4] Decimal, [Token[type=DECIMAL, literal=1.0]], Literal[value=1.0, class=BigDecimal]</td>
+<td class="success">testLiteralExpr(String, Object, Object)[4]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[5] Character, [Token[type=CHARACTER, literal='c']], Literal[value=c, class=Character]</td>
+<td class="success">testLiteralExpr(String, Object, Object)[5]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[6] String, [Token[type=STRING, literal=&quot;string&quot;]], Literal[value=string, class=String]</td>
+<td class="success">testLiteralExpr(String, Object, Object)[6]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[7] String Newline Escape, [Token[type=STRING, literal=&quot;Hello,\nWorld!&quot;]], Literal[value=Hello,
+World!, class=String]</td>
+<td class="success">testLiteralExpr(String, Object, Object)[7]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Method, [Token[type=IDENTIFIER, literal=receiver], Token[type=OPERATOR, literal=.], Token[type=IDENTIFIER, literal=method], Token[type=OPERATOR, literal=(], Token[type=OPERATOR, literal=)]], Method[receiver=Variable[name=receiver], name=method, arguments=[]]</td>
+<td class="success">testMethodExpr(String, Object, Method)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Arguments, [Token[type=IDENTIFIER, literal=receiver], Token[type=OPERATOR, literal=.], Token[type=IDENTIFIER, literal=method], Token[type=OPERATOR, literal=(], Token[type=IDENTIFIER, literal=first], Token[type=OPERATOR, literal=,], Token[type=IDENTIFIER, literal=second], Token[type=OPERATOR, literal=,], Token[type=IDENTIFIER, literal=third], Token[type=OPERATOR, literal=)]], Method[receiver=Variable[name=receiver], name=method, arguments=[Variable[name=first], Variable[name=second], Variable[name=third]]]</td>
+<td class="success">testMethodExpr(String, Object, Method)[2]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Field, [Token[type=IDENTIFIER, literal=OBJECT], Token[type=IDENTIFIER, literal=DO], Token[type=IDENTIFIER, literal=LET], Token[type=IDENTIFIER, literal=field], Token[type=OPERATOR, literal=;], Token[type=IDENTIFIER, literal=END]], ObjectExpr[name=Optional.empty, fields=[Let[name=field, value=Optional.empty]], methods=[]]</td>
+<td class="success">testObjectExpr(String, Object, ObjectExpr)[1]</td>
+<td class="success">0.003s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Method, [Token[type=IDENTIFIER, literal=OBJECT], Token[type=IDENTIFIER, literal=DO], Token[type=IDENTIFIER, literal=DEF], Token[type=IDENTIFIER, literal=method], Token[type=OPERATOR, literal=(], Token[type=OPERATOR, literal=)], Token[type=IDENTIFIER, literal=DO], Token[type=IDENTIFIER, literal=END], Token[type=IDENTIFIER, literal=END]], ObjectExpr[name=Optional.empty, fields=[], methods=[Def[name=method, parameters=[], body=[]]]]</td>
+<td class="success">testObjectExpr(String, Object, ObjectExpr)[2]</td>
+<td class="success">0.002s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Hello World, DEF main() DO
+    print(&quot;Hello, World!&quot;);
+END
+, Source[statements=[Def[name=main, parameters=[], body=[Expression[expression=Function[name=print, arguments=[Literal[value=Hello, World!, class=String]]]]]]]]</td>
+<td class="success">testProgram(String, Object, Object)[1]</td>
+<td class="success">0.002s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Property, [Token[type=IDENTIFIER, literal=receiver], Token[type=OPERATOR, literal=.], Token[type=IDENTIFIER, literal=property]], Property[receiver=Variable[name=receiver], name=property]</td>
+<td class="success">testPropertyExpr(String, Object, Object)[1]</td>
+<td class="success">0.002s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Missing Name, [Token[type=IDENTIFIER, literal=receiver], Token[type=OPERATOR, literal=.]], plc.project.parser.ParseException: 
+ - @ token EOF</td>
+<td class="success">testPropertyExpr(String, Object, Object)[2]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Return Expr, [Token[type=IDENTIFIER, literal=RETURN], Token[type=IDENTIFIER, literal=expr], Token[type=OPERATOR, literal=;]], Return[value=Optional[Variable[name=expr]]]</td>
+<td class="success">testReturnStmt(String, Object, Object)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Return If, [Token[type=IDENTIFIER, literal=RETURN], Token[type=IDENTIFIER, literal=IF], Token[type=IDENTIFIER, literal=cond], Token[type=OPERATOR, literal=;]], If[condition=Variable[name=cond], thenBody=[Return[value=Optional.empty]], elseBody=[]]</td>
+<td class="success">testReturnStmt(String, Object, Object)[2]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Single, [Token[type=IDENTIFIER, literal=stmt], Token[type=OPERATOR, literal=;]], Source[statements=[Expression[expression=Variable[name=stmt]]]]</td>
+<td class="success">testSource(String, Object, Object)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] Multiple, [Token[type=IDENTIFIER, literal=first], Token[type=OPERATOR, literal=;], Token[type=IDENTIFIER, literal=second], Token[type=OPERATOR, literal=;], Token[type=IDENTIFIER, literal=third], Token[type=OPERATOR, literal=;]], Source[statements=[Expression[expression=Variable[name=first]], Expression[expression=Variable[name=second]], Expression[expression=Variable[name=third]]]]</td>
+<td class="success">testSource(String, Object, Object)[2]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] Variable, [Token[type=IDENTIFIER, literal=variable]], Variable[name=variable]</td>
+<td class="success">testVariableExpr(String, Object, Object)[1]</td>
+<td class="success">0.007s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 9.2.1</a> at Mar 24, 2026, 7:26:05 PM</p>
+</div>
+</div>
+</body>
+</html>

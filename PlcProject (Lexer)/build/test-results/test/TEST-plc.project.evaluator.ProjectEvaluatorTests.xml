@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="plc.project.evaluator.ProjectEvaluatorTests" tests="14" skipped="0" failures="1" errors="0" timestamp="2026-03-24T23:26:04.808Z" hostname="BISHOYP" time="0.016">
+  <properties/>
+  <testcase name="testBinaryArithmeticBigInteger()" classname="plc.project.evaluator.ProjectEvaluatorTests" time="0.001"/>
+  <testcase name="testRange()" classname="plc.project.evaluator.ProjectEvaluatorTests" time="0.001"/>
+  <testcase name="testSqrt()" classname="plc.project.evaluator.ProjectEvaluatorTests" time="0.009">
+    <failure message="org.opentest4j.AssertionFailedError: expected: &lt;Primitive[value=4.000000000000000, class=BigDecimal]&gt; but was: &lt;Primitive[value=4, class=BigDecimal]&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: expected: &lt;Primitive[value=4.000000000000000, class=BigDecimal]&gt; but was: &lt;Primitive[value=4, class=BigDecimal]&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1141)
+	at app//plc.project.evaluator.ProjectEvaluatorTests.test(ProjectEvaluatorTests.java:171)
+	at app//plc.project.evaluator.ProjectEvaluatorTests.testSqrt(ProjectEvaluatorTests.java:151)
+	at java.base@21.0.9/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base@21.0.9/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base@21.0.9/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="testObjectExprAndMethod()" classname="plc.project.evaluator.ProjectEvaluatorTests" time="0.0"/>
+  <testcase name="testLiteral()" classname="plc.project.evaluator.ProjectEvaluatorTests" time="0.0"/>
+  <testcase name="testLetAndVariable()" classname="plc.project.evaluator.ProjectEvaluatorTests" time="0.0"/>
+  <testcase name="testBinaryLogical()" classname="plc.project.evaluator.ProjectEvaluatorTests" time="0.0"/>
+  <testcase name="testAssignment()" classname="plc.project.evaluator.ProjectEvaluatorTests" time="0.001"/>
+  <testcase name="testDefAndFunction()" classname="plc.project.evaluator.ProjectEvaluatorTests" time="0.0"/>
+  <testcase name="testIfStatement()" classname="plc.project.evaluator.ProjectEvaluatorTests" time="0.0"/>
+  <testcase name="testInheritance()" classname="plc.project.evaluator.ProjectEvaluatorTests" time="0.0"/>
+  <testcase name="testBinaryArithmeticBigDecimal()" classname="plc.project.evaluator.ProjectEvaluatorTests" time="0.0"/>
+  <testcase name="testBinaryComparison()" classname="plc.project.evaluator.ProjectEvaluatorTests" time="0.0"/>
+  <testcase name="testBinaryStringConcatenation()" classname="plc.project.evaluator.ProjectEvaluatorTests" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

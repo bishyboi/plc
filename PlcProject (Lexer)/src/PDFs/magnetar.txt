@@ -1,0 +1,17 @@
+Evaluator (TEST 2 - All) (71/79):
+    Evaluator (71/79):
+        Provided Examples (47/48):
+            Binary Expr (10/11):
+                Op/ Decimal Rounding Down (0/1): Unexpected RuntimeValue `Primitive[value=1.05, class=BigDecimal]`, expected a different value.
+        Additional Examples (24/31):
+            Assignment Stmt (1/3):
+                Variable Undefined Result (0/1): Unexpected exception (java.lang.IllegalStateException: Variable is not defined.)
+                Variable Undefined Log (0/1): Unexpected exception (java.lang.IllegalStateException: Variable is not defined.)
+            Binary Expr (5/6):
+                Op/ Decimal Rounding Up (0/1): Unexpected RuntimeValue `Primitive[value=1.15, class=BigDecimal]`, expected a different value.
+            Object Expr (2/4):
+                Field Redefinition (0/1): Unexpected exception (java.lang.IllegalStateException: Variable is already defined.)
+                Method Scope Field (0/1): Unexpected RuntimeValue `Primitive[value=null, class=N/A]`, expected an EvaluateException.
+            Exception Ast (0/2):
+                Binary + Left Validation (0/1): Unexpected EvaluateException AST `Binary[operator=+, left=Literal[value=false, class=Boolean], right=Literal[value=true, class=Boolean]], expected a different AST.
+                Binary / Divide By Zero (0/1): Unexpected EvaluateException AST `Binary[operator=/, left=Literal[value=1.0, class=BigDecimal], right=Literal[value=0.0, class=BigDecimal]], expected a different AST.

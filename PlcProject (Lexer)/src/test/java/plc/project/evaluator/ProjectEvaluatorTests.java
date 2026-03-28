@@ -97,7 +97,7 @@ public final class ProjectEvaluatorTests {
         Evaluator evaluator = new Evaluator(scope);
         // DEF add(a, b) DO RETURN a + b; END
         evaluator.visit(new Ast.Stmt.Def("add", List.of("a", "b"), List.of(
-            new Ast.Stmt.Return(new Ast.Expr.Binary("+", new Ast.Expr.Variable("a"), new Ast.Expr.Variable("b")))
+            new Ast.Stmt.Return(Optional.of(new Ast.Expr.Binary("+", new Ast.Expr.Variable("a"), new Ast.Expr.Variable("b"))))
         )));
         // add(1, 2)
         RuntimeValue result = evaluator.visit(new Ast.Expr.Function("add", List.of(
@@ -113,9 +113,9 @@ public final class ProjectEvaluatorTests {
         Evaluator evaluator = new Evaluator(scope);
         // OBJECT MyObj DO LET x = 5; DEF getX() DO RETURN this.x; END END
         Ast.Expr.ObjectExpr objectExpr = new Ast.Expr.ObjectExpr(Optional.of("MyObj"), 
-            List.of(new Ast.Expr.ObjectExpr.Field("x", Optional.of(new Ast.Expr.Literal(BigInteger.valueOf(5))))),
-            List.of(new Ast.Expr.ObjectExpr.Method("getX", Collections.emptyList(), List.of(
-                new Ast.Stmt.Return(new Ast.Expr.Property(new Ast.Expr.Variable("this"), "x"))
+            List.of(new Ast.Stmt.Let("x", Optional.of(new Ast.Expr.Literal(BigInteger.valueOf(5))))),
+            List.of(new Ast.Stmt.Def("getX", Collections.emptyList(), List.of(
+                new Ast.Stmt.Return(Optional.of(new Ast.Expr.Property(new Ast.Expr.Variable("this"), "x")))
             )))
         );
         evaluator.visit(new Ast.Stmt.Let("obj", Optional.of(objectExpr)));
@@ -130,13 +130,13 @@ public final class ProjectEvaluatorTests {
         Evaluator evaluator = new Evaluator(scope);
         // Prototype: OBJECT Proto DO LET y = 10; END END
         Ast.Expr.ObjectExpr protoExpr = new Ast.Expr.ObjectExpr(Optional.of("Proto"), 
-            List.of(new Ast.Expr.ObjectExpr.Field("y", Optional.of(new Ast.Expr.Literal(BigInteger.valueOf(10))))),
+            List.of(new Ast.Stmt.Let("y", Optional.of(new Ast.Expr.Literal(BigInteger.valueOf(10))))),
             Collections.emptyList()
         );
         evaluator.visit(new Ast.Stmt.Let("proto", Optional.of(protoExpr)));
         // Child: OBJECT Child DO LET prototype = proto; END END
         Ast.Expr.ObjectExpr childExpr = new Ast.Expr.ObjectExpr(Optional.of("Child"), 
-            List.of(new Ast.Expr.ObjectExpr.Field("prototype", Optional.of(new Ast.Expr.Variable("proto")))),
+            List.of(new Ast.Stmt.Let("prototype", Optional.of(new Ast.Expr.Variable("proto")))),
             Collections.emptyList()
         );
         evaluator.visit(new Ast.Stmt.Let("child", Optional.of(childExpr)));

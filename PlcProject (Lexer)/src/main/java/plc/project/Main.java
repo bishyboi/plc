@@ -68,7 +68,7 @@ public final class Main {
             System.out.println("log: " + arguments.getFirst().print());
             return arguments.getFirst();
         }));
-        scope.define("scope", new RuntimeValue.Function("dynamic_scope", _ -> {
+        scope.define("scope", new RuntimeValue.Function("dynamic_scope", ignored -> {
             return new RuntimeValue.Primitive(EVALUATOR.getScope()); //returns *current* scope
         }));
     }
