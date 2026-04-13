@@ -145,7 +145,11 @@ public final class Evaluator implements Ast.Visitor<RuntimeValue, EvaluateExcept
         // assigns a value to either a variable or a property of an object
         var value = visit(ast.value());
         if (ast.expression() instanceof Ast.Expr.Variable variable) {
-            scope.assign(variable.name(), value);
+            try {
+                scope.assign(variable.name(), value);
+            } catch (IllegalStateException e) {
+                throw new EvaluateException("Variable " + variable.name() + " is not defined.", ast.expression());
+            }
         } else if (ast.expression() instanceof Ast.Expr.Property property) {
             RuntimeValue receiverValue = visit(property.receiver());
             Optional<RuntimeValue.ObjectValue> receiverOpt = requireType(receiverValue, RuntimeValue.ObjectValue.class);
@@ -224,7 +228,7 @@ public final class Evaluator implements Ast.Visitor<RuntimeValue, EvaluateExcept
                     rightValForPlus instanceof RuntimeValue.Primitive p2 && p2.value() instanceof java.math.BigDecimal d2) {
                     return new RuntimeValue.Primitive(d1.add(d2));
                 }
-                throw new EvaluateException("Invalid operands for +.", ast);
+                throw new EvaluateException("Invalid operands for +.", ast.left());
             case "-":
             case "*":
             case "/":
@@ -238,7 +242,7 @@ public final class Evaluator implements Ast.Visitor<RuntimeValue, EvaluateExcept
                 if (leftVal instanceof RuntimeValue.Primitive p1 && p1.value() instanceof java.math.BigInteger b1 &&
                     rightVal instanceof RuntimeValue.Primitive p2 && p2.value() instanceof java.math.BigInteger b2) {
                     if (ast.operator().equals("/") && b2.equals(java.math.BigInteger.ZERO)) {
-                        throw new EvaluateException("Divide by zero.", ast);
+                        throw new EvaluateException("Divide by zero.", ast.right());
                     }
                     if (ast.operator().equals("-")) return new RuntimeValue.Primitive(b1.subtract(b2));
                     if (ast.operator().equals("*")) return new RuntimeValue.Primitive(b1.multiply(b2));
@@ -247,14 +251,15 @@ public final class Evaluator implements Ast.Visitor<RuntimeValue, EvaluateExcept
                 if (leftVal instanceof RuntimeValue.Primitive p1 && p1.value() instanceof java.math.BigDecimal d1 &&
                     rightVal instanceof RuntimeValue.Primitive p2 && p2.value() instanceof java.math.BigDecimal d2) {
                     if (ast.operator().equals("/") && d2.compareTo(java.math.BigDecimal.ZERO) == 0) {
-                        throw new EvaluateException("Divide by zero.", ast);
+                        throw new EvaluateException("Divide by zero.", ast.right());
                     }
                     if (ast.operator().equals("-")) return new RuntimeValue.Primitive(d1.subtract(d2));
                     if (ast.operator().equals("*")) return new RuntimeValue.Primitive(d1.multiply(d2));
                     if (d1.scale() == 0 && d2.scale() == 0) {
                         return new RuntimeValue.Primitive(d1.divide(d2, 0, java.math.RoundingMode.DOWN));
                     }
-                    return new RuntimeValue.Primitive(d1.divide(d2, java.math.MathContext.DECIMAL64));
+                    int resultScale = Math.max(d1.scale(), d2.scale());
+                    return new RuntimeValue.Primitive(d1.divide(d2, resultScale, java.math.RoundingMode.HALF_EVEN));
                 }
                 throw new EvaluateException("Invalid operands for arithmetic.", ast);
             case "==":
@@ -394,7 +399,11 @@ public final class Evaluator implements Ast.Visitor<RuntimeValue, EvaluateExcept
                 } else {
                     value = new RuntimeValue.Primitive(null);
                 }
-                scope.define(field.name(), value);
+                try {
+                    scope.define(field.name(), value);
+                } catch (IllegalStateException e) {
+                    throw new EvaluateException("Field " + field.name() + " is already defined.", field);
+                }
             }
             // define all methods with support for the this keyword
             for (var method : ast.methods()) {
@@ -403,7 +412,7 @@ public final class Evaluator implements Ast.Visitor<RuntimeValue, EvaluateExcept
                         throw new EvaluateException("Expected " + method.parameters().size() + " arguments, but got " + (arguments.size() - 1) + ".");
                     }
                     Scope pScope = scope;
-                    scope = new Scope(object.scope());
+                    scope = new Scope(parentScope);
                     scope.define("this", arguments.get(0));
                     for (int i = 0; i < method.parameters().size(); i++) {
                         scope.define(method.parameters().get(i), arguments.get(i + 1));
